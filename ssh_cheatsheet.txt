@@ -1,0 +1,80 @@
+# 	Type ssh-keygen -t followed by the key type and an optional comment.
+	This comment is included in the .pub file that's created.
+	You may want to use an email address for the comment.
+
+	ssh-keygen -t ed25519 -C "<comment>"
+
+# 	Press Enter. Output similar to the following is displayed:
+
+	Generating public/private ed25519 key pair.
+	Enter file in which to save the key (/home/user/.ssh/id_ed25519): /home/user/.ssh/id_ed25519_your_custom_key_name
+
+# 	Specify a passphrase:
+
+	Enter passphrase (empty for no passphrase):
+	Enter same passphrase again:
+
+# 	If you did not save your SSH key pair in the default directory,
+	configure your SSH client to point to the directory where the private key is stored.
+	Before adding your new private key to the SSH agent, make sure that the SSH agent is running by executing the following command:
+
+	eval $(ssh-agent -s)
+
+# 	Then run the following command to add your newly generated Ed25519 key to SSH agent:
+
+	ssh-add ~/.ssh/id_ed25519_your_custom_key_name
+
+# 	Save these settings in the ~/.ssh/config file ( if it not exists create: sudo touch ~/.ssh/config ). For example:
+
+	# GitLab.com
+	Host gitlab.com ( it's an alias )
+		HostName gitlab.com or HostName 198.222.111.33
+	  	PreferredAuthentications publickey
+	  	IdentityFile ~/.ssh/gitlab_com_rsa
+
+	# Private GitLab instance
+	Host gitlab.company.com ( it's an alias )
+		HostName gitlab.company.com or HostName 198.222.111.33
+		PreferredAuthentications publickey
+		IdentityFile ~/.ssh/example_com_rsa
+
+#	You can update the passphrase for your SSH key:
+
+	ssh-keygen -p -f /path/to/ssh_key
+
+	At the prompts, type the passphrase and press Enter
+
+#	Copy the contents of your public key file. You can do this manually or use a script.
+	For example, to copy an ED25519 key to the clipboard:
+
+	Linux (requires the xclip package): xclip -sel clip < ~/.ssh/id_ed25519.pub
+
+	Git Bash on Windows: cat ~/.ssh/id_ed25519_your_custom_key_name.pub | clip
+
+#	Add an SSH key to your GitLab or GitHub account
+
+#	Add an SSH key to your GitLab or GitHub account:
+
+	ssh -T git@gitlab.example.com
+	or
+	ssh -T git@github.example.com
+
+#	If this is the first time you connect, you should verify the
+	authenticity of the GitLab or GitHub host. If you see a message like:
+
+	The authenticity of host 'gitlab.example.com (35.231.145.151)' can't be established.
+	ECDSA key fingerprint is SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw.
+	Are you sure you want to continue connecting (yes/no)? yes
+	Warning: Permanently added 'gitlab.example.com' (ECDSA) to the list of known hosts.
+
+	Type yes and press Enter.
+
+#	Run the ssh -T git@gitlab.example.com command again. You should receive a Welcome to GitLab, @username! message.
+
+	If the welcome message doesn't appear, you can troubleshoot by running ssh
+	in verbose mode:
+
+	ssh -Tvvv git@gitlab.example.com
+	or
+	ssh -Tvvv git@github.example.com
+

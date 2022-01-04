@@ -1,0 +1,116 @@
+
+postgresql
+
+#####
+To change the password of any linux user, including the Postgres root:
+
+sudo passwd postgres
+
+Then:
+
+su - postgres
+psql -U postgres template1 -c alter user postgres with password 'newpassword';
+####
+
+# check posgresql server status
+user@DESKTOP-...:/mnt/c/Users/User$ sudo service postgresql status
+[sudo] password for user:
+14/main (port 5432): online
+
+user@DESKTOP-...:/mnt/c/Users/User$ sudo service postgresql status
+[sudo] password for user:
+14/main (port 5432): down
+
+# start posgresql server if it is down
+user@DESKTOP-...:/mnt/c/Users/User$ sudo service postgresql start
+[sudo] password for user:
+ * Starting PostgreSQL 14 database server      [ OK ]
+user@DESKTOP-...:/mnt/c/Users/User$
+
+# enter to the posgresql account like User postgres
+user@DESKTOP-...:/mnt/c/Users/User$ sudo -i -u postgres
+[sudo] password for user:
+postgres@DESKTOP-...:~$
+
+# create new database like User postgres
+postgres@DESKTOP-...:~$ createdb newdb -U postgres
+
+# enter to psql tool
+postgres@DESKTOP-...:~$ psql
+psql (14.1 (Ubuntu 14.1-2.pgdg20.04+1))
+Type "help" for help.
+
+postgres=#
+
+# get all databases list
+postgres=# \l
+                              List of databases
+   Name    |  Owner   | Encoding | Collate |  Ctype  |   Access privileges
+-----------+----------+----------+---------+---------+-----------------------
+ newdb   | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
+ postgres  | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
+ template0 | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+           |          |          |         |         | postgres=CTc/postgres
+ template1 | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+           |          |          |         |         | postgres=CTc/postgres
+(4 rows)
+
+postgres=#
+
+
+# exit from psql tool
+postgres=# \q
+
+# connect to the database newdb
+postgres@DESKTOP-PI1LGM7:~$ psql newdb
+psql (14.1 (Ubuntu 14.1-2.pgdg20.04+1))
+Type "help" for help.
+
+newdb=#
+
+# change or add password for current database
+newdb=# \password
+Enter new password: mypassword
+Enter it again: mypassword
+
+# get all tables list in current database
+newdb=# \d
+
+                      List of relations
+ Schema |             Name              |   Type   |  Owner
+--------+-------------------------------+----------+----------
+ public | failed_jobs                   | table    | postgres
+ public | failed_jobs_id_seq            | sequence | postgres
+ public | migrations                    | table    | postgres
+ public | migrations_id_seq             | sequence | postgres
+ public | model_has_permissions         | table    | postgres
+ public | model_has_roles               | table    | postgres
+ public | password_resets               | table    | postgres
+ public | permissions                   | table    | postgres
+ public | permissions_id_seq            | sequence | postgres
+ public | personal_access_tokens        | table    | postgres
+ public | personal_access_tokens_id_seq | sequence | postgres
+ public | profiles                      | table    | postgres
+ public | profiles_id_seq               | sequence | postgres
+ public | role_has_permissions          | table    | postgres
+ public | roles                         | table    | postgres
+ public | roles_id_seq                  | sequence | postgres
+ public | users                         | table    | postgres
+ public | users_id_seq                  | sequence | postgres
+(18 rows)
+
+newdb=#
+
+# make query to the current database
+newdb=# SELECT first_name name, email FROM users;
+  name   |       email
+---------+-------------------
+ user    | user@test.com
+ user    | user2@test.com
+ user    | user55@test.com
+ admin   | admin777@test.com
+ NEWuser | NEWuser@test.com
+ NEWuser | Nuser@test.com
+(6 rows)
+
+newdb=#
